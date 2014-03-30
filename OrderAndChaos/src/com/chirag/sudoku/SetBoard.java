@@ -1,0 +1,292 @@
+package com.chirag.sudoku;
+
+import java.util.Random;
+import android.R.string;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+import chirag.orderchaos.R;
+
+
+public class SetBoard extends Activity {
+
+	String letter;
+	private int i,j;
+	private int[][] history = new int[2][2];
+	public enum xORo
+	{
+		O(1),X(2);
+		 int value;
+		xORo(int p)
+		{
+			value = p;
+		}
+		public int getValue()
+		{
+			return value;
+		}
+	}	
+	xORo xo;
+	int AI=0,botTurn=0;
+	theGame game = new theGame();
+	AIPlayer bot = new AIPlayer();
+	public void onCreate(Bundle savedInstanceState) 
+	{
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.board);   
+    	 
+        
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null)
+        	AI = extras.getInt("AIPlayer"); 
+	}
+	
+	public void position(int id)
+	{
+		int cons = 0x7f080001;
+		
+		if(id==cons+1)
+		{
+			j=5;i=0;
+		}
+		else if(id==cons+2)
+		{
+			j=4;i=0;
+		}
+		else if(id==cons+3)
+		{
+			j=3;i=0;
+		}
+		else if(id==cons+4)
+		{
+			j=2;i=0;
+		}
+		else if(id==cons+5)
+		{
+			j=1;i=0;
+		}
+		else if(id==cons+6)
+		{
+			j=0;i=0;
+		}
+		else if(id==cons+7)
+		{
+			j=5;i=1;
+		}
+		else if(id==cons+8)
+		{
+			j=4;i=1;
+		}
+		else if(id==cons+9)
+		{
+			j=3;i=1;
+		}
+		else if(id==cons+10)
+		{
+			j=2;i=1;
+		}
+		else if(id==cons+11)
+		{
+			j=1;i=1;
+		}
+		else if(id==cons+12)
+		{
+			j=0;i=1;
+		}
+		else if(id==cons+13)
+		{
+			j=5;i=2;
+		}
+		else if(id==cons+14)
+		{
+			j=4;i=2;
+		}
+		else if(id==cons+15)
+		{
+			j=3;i=2;
+		}
+		else if(id==cons+16)
+		{
+			j=2;i=2;
+		}
+		else if(id==cons+17)
+		{
+			j=1;i=2;
+		}
+		else if(id==cons+18)
+		{
+			j=0;i=2;
+		}
+		else if(id==cons+19)
+		{
+			j=5;i=3;
+		}
+		else if(id==cons+20)
+		{
+			j=4;i=3;
+		}
+		else if(id==cons+21)
+		{
+			j=3;i=3;
+		}
+		else if(id==cons+22)
+		{
+			j=2;i=3;
+		}
+		else if(id==cons+23)
+		{
+			j=1;i=3;
+		}
+		else if(id==cons+24)
+		{
+			j=0;i=3;
+		}
+		else if(id==cons+25)
+		{
+			j=5;i=4;
+		}
+		else if(id==cons+26)
+		{
+			j=4;i=4;
+		}
+		else if(id==cons+27)
+		{
+			j=3;i=4;
+		}
+		else if(id==cons+28)
+		{
+			j=2;i=4;
+		}
+		else if(id==cons+29)
+		{
+			j=1;i=4;
+		}
+		else if(id==cons+30)
+		{
+			j=0;i=4;
+		}
+		else if(id==cons+31)
+		{
+			j=5;i=5;
+		}
+		else if(id==cons+32)
+		{
+			j=4;i=5;
+		}
+		else if(id==cons+33)
+		{
+			j=3;i=5;
+		}
+		else if(id==cons+34)
+		{
+			j=2;i=5;
+		}
+		else if(id==cons+35)
+		{
+			j=1;i=5;
+		}
+		else 
+		{
+			j=0;i=5;
+		}
+	}
+	
+	
+	public void tgl(View v)
+	{
+
+    	
+		if(v.getId()==R.id.x)
+		{
+			xo = xORo.X;
+			letter = "X";
+			if(((ToggleButton) findViewById(R.id.o)).isChecked())
+			{
+				((ToggleButton) findViewById(R.id.o)).setChecked(false);
+			}
+		}
+		if(v.getId()==R.id.o)
+		{
+			letter = "O";
+			xo = xORo.O;
+			if(((ToggleButton) findViewById(R.id.x)).isChecked())
+				((ToggleButton) findViewById(R.id.x)).setChecked(false);
+		}
+
+	}
+	
+	
+	public void play(View v)
+	{
+//		System.out.println("Click Performed");
+		
+		ToggleButton tb1 =  (ToggleButton) findViewById(R.id.x);
+		ToggleButton tb2 =  (ToggleButton) findViewById(R.id.o);
+		if(tb1.isChecked() || tb2.isChecked())
+		{
+			position(v.getId());
+			
+			((Button) findViewById(v.getId())).setText(letter);
+			((Button) findViewById(v.getId())).setEnabled(false);
+			if(game.setValue(xo.getValue(),i,j)==1)
+				textToast("Order Wins!");
+
+			tb1.setChecked(false);
+			tb2.setChecked(false);
+			botTurn++;
+			if(AI==1 && ((botTurn)%2==1))
+				botMove();
+		}
+
+	}
+	
+	void botMove()
+	{
+//		System.out.println("From botMove");
+		int[] move = (new AIPlayer()).Board(game.arr);
+		int cons = 0x7f080001;
+//		System.out.println("move[1] = "+ move[1] + " move[2] = "+ move[2]);
+//		System.out.println("score = " + move[0]);
+//		System.out.println("x="+move[1] + " y="+move[2]);
+		int id = (6-move[2])+ 6*(move[1]) + cons;
+		if(move[3]==1)
+			((ToggleButton) findViewById(R.id.o)).performClick();
+		else
+			((ToggleButton) findViewById(R.id.x)).performClick();
+		
+		((Button) findViewById(id)).performClick();
+	}
+	
+	public void textToast(String textToDisplay) {
+		Context context = getApplicationContext();
+		CharSequence text = textToDisplay;
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.setGravity(Gravity.TOP|Gravity.LEFT, 50, 50);
+		toast.show();
+		}
+
+	public void undo(View v)
+	{
+		
+	}
+
+}
+
+

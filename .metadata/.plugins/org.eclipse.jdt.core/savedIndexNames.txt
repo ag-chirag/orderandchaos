@@ -1,0 +1,4 @@
+INDEX VERSION 1.126+D:\anroid project\.metadata\.plugins\org.eclipse.jdt.core
+49394245.index
+2839087700.index
+1444548417.index
