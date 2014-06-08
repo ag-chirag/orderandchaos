@@ -30,7 +30,7 @@
             android:layout_marginTop="10px"
             android:text="Single Player"
             android:textSize="50px"
-            android:onClick="toBoard"
+            android:onClick="level"
             android:padding="0px"
             style="@style/btnStyleBlackpearl" />   
              
@@ -44,6 +44,7 @@
             android:text="Statistics"
             android:textSize="50px"
             android:padding="0px"
+            android:onClick="toStats"
             style="@style/btnStyleBlackpearl" />          
                  
 </RelativeLayout>    

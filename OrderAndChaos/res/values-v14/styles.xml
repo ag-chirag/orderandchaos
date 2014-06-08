@@ -9,7 +9,7 @@
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
-        -->
+        -->  
     </style>
 
     <!-- Application theme. -->
@@ -43,4 +43,14 @@
        <item name="android:padding">10dip</item>    
    </style>
    
+   	   	    <style name="CustomActionBarTheme"
+           parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <!--   <item name="android:actionBarStyle">@style/MyActionBar</item> -->
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar"
+           parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+     <!--    <item name="android:background">@drawable/actionbar_background</item>  -->
+    </style>
 </resources>

@@ -4,7 +4,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
                 android:layout_width="fill_parent" 
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:orientation="horizontal"
                 android:background="@drawable/back">
     
@@ -539,7 +539,8 @@
         android:layout_marginRight="10px"
         android:layout_marginTop="20px"
         android:src="@drawable/undo"
-        android:background="@drawable/custom_btn_black_pearl"/>  
+        android:background="@drawable/custom_btn_black_pearl"
+        android:onClick="undo"/>  
         
         <ImageButton
         android:id="@+id/refresh"
@@ -551,6 +552,7 @@
         android:layout_marginLeft="10px"
         android:src="@drawable/refresh"
         android:background="@drawable/custom_btn_black_pearl"
-        android:onClick="undo"/> 
+        android:onClick="reset"
+        /> 
     
 </RelativeLayout> 

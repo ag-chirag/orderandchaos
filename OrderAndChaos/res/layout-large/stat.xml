@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back" >
+
+        
+    <TextView
+        android:id="@+id/txtview"
+        android:layout_width="1px"
+        android:layout_height="1px"
+        android:layout_centerInParent="true"
+        android:text="" />
+    <TextView
+        android:id="@+id/orderwins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order  "
+        android:textStyle="bold"
+        android:gravity="center"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="50px"
+        android:textColor="#FFFFFF"
+        android:layout_above="@id/txtview"
+        android:layout_centerHorizontal="true"
+        />
+    
+    <TextView
+        android:id="@+id/chaoswins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chaos  "
+        android:textStyle="bold"
+        android:gravity="center"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"        
+        android:textSize="50px"
+        android:textColor="#FFFFFF"
+        android:layout_below="@id/txtview"
+        android:layout_centerHorizontal="true"
+        />
+</RelativeLayout>

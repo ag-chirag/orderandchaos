@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--   -->    
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent" 
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:background="@drawable/back">
+
+<RelativeLayout 
+    			android:id="@+id/topLayout"
+                android:layout_width="fill_parent" 
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                >
+               
+      <TextView
+        android:id="@+id/heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How To Play"
+        android:gravity="center"
+        android:textStyle="normal"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="60px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_marginTop="10px"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout> 
+        
+<ScrollView  
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/topLayout"
+    android:overScrollMode="never" >
+    
+			<RelativeLayout 
+                android:layout_width="fill_parent" 
+                android:layout_height="match_parent">
+
+
+    
+    <TextView
+        android:id="@+id/point1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1. This is a two player game."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_marginTop="20px"
+        />
+    
+    <TextView
+        android:id="@+id/point2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2. One player is Order, another is Chaos."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point1"
+        android:layout_marginTop="2px"
+        />    
+
+    <TextView
+        android:id="@+id/point3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3. The aim of Order is to form a chain of 5 Xs or 5 Os."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point2"
+        android:layout_marginTop="2px"
+        />
+    
+    <TextView
+        android:id="@+id/point4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4. The aim of Chaos is to stop Order from doing so."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point3"
+        android:layout_marginTop="2px"
+        />    
+        
+    
+    <TextView
+        android:id="@+id/point5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5. Both Order and Chaos can use both X and O to make their moves."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point4"
+        android:layout_marginTop="2px"
+        />      
+        
+     
+    <TextView
+        android:id="@+id/point6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6. To make a move Select either X or O and tap the position where you want to make the move."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point5"
+        android:layout_marginTop="2px"
+        />   
+        
+    
+        <TextView
+        android:id="@+id/point7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="7. In the Single Player mode the Human player, that means You, is Order by default."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point6"
+        android:layout_marginTop="2px"
+        />
+        
+        <TextView
+        android:id="@+id/point8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8. The game can be played over Bluetooth. Just open the Bluetooth mode in both the devices and Connect!"
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point7"
+        android:layout_marginTop="2px"
+        />  
+        
+        <TextView
+        android:id="@+id/point9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thats all, You are good to go."
+        android:textStyle="normal"
+        android:gravity="left"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="10dip"
+        android:textSize="25px"
+        android:textColor="#FFFFFF"
+        android:layout_marginLeft="2px"
+        android:layout_below="@id/point8"
+        android:layout_marginTop="2px"
+        />       
+ <!-- </LinearLayout>     -->
+   
+</RelativeLayout> 
+  </ScrollView>  
+ </RelativeLayout>  
+<!--    -->

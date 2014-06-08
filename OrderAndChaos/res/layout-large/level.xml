@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!-- Demonstrates using a relative layout to create a form --> 
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+                android:layout_width="fill_parent" 
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:background="@drawable/back">
+
+    <Button android:id="@+id/medium"
+            android:background="@drawable/custom_btn_black_pearl"
+            android:layout_width="300px" 
+            android:layout_height="70px"
+            android:layout_centerInParent="true"
+            android:text="Medium"
+            android:layout_marginBottom="10px"
+            android:textSize="50px"
+            android:padding="0px"
+            android:onClick = "toMedium"
+            style="@style/btnStyleBlackpearl" /> 
+            
+    <Button android:id="@+id/easy"
+            android:background="@drawable/custom_btn_black_pearl"
+            android:layout_width="300px" 
+            android:layout_height="70px"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/medium"
+            android:layout_marginBottom="10px"
+            android:layout_marginTop="10px"
+            android:text="Easy"
+            android:textSize="50px"
+            android:onClick="toEasy"
+            android:padding="0px"
+            style="@style/btnStyleBlackpearl" />   
+             
+    <Button android:id="@+id/extreme"
+            android:background="@drawable/custom_btn_black_pearl"
+            android:layout_width="300px" 
+            android:layout_height="70px"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/medium"
+            android:layout_marginBottom="10px"
+            android:text="Extreme"
+            android:textSize="50px"
+            android:padding="0px"
+            android:onClick="toExtreme"
+            style="@style/btnStyleBlackpearl" />          
+                 
+</RelativeLayout>    

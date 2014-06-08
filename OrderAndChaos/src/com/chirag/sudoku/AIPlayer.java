@@ -1,18 +1,42 @@
 package com.chirag.sudoku;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-
+import android.content.Context;
 public class AIPlayer {
 	
 	enum player{
 		computer,human;
 	}
 	
+	public enum level
+	{
+		easy(1),medium(2),extreme(3);
+		int value;
+		level(int p)
+		{
+			value = p;
+		}
+		public int getValue()
+		{
+			return value;
+		}
+	}
+	
+	level level;
+	int level_number,move_number;
 	int[][] board = new int[6][6];
 	static final int comp_gain = 500;
 	static final int inf_pos = 2000000;
 	static final int inf_neg = -2000000;
+	
+	AIPlayer(int level_number)
+	{
+		this.level_number = level_number;
+		this.move_number = 0;
+	}
+	
 	public int[] Board(int[][] playBoard)
 	{
 		for(int i=0;i<6;i++)
@@ -28,7 +52,15 @@ public class AIPlayer {
 	int[] myMove()
 	{
 	//	System.out.println("Called from myMove");
-		return minmax(1,player.computer,inf_neg,inf_pos);	
+	
+		int depth=1;
+		if(level_number==1 || level_number==2)
+			depth = 1;
+		else if(level_number==3)
+			depth=2;
+//		System.out.println("Depth "+depth);
+		move_number++;
+		return minmax(depth,player.computer,inf_neg,inf_pos);	
 	}
 	
 	
@@ -36,6 +68,16 @@ public class AIPlayer {
 	{
 		int moveX=-1,moveY=-1,value=-1,score=0;
 		List<int[]> possibleMoves = generateMoves();
+		if(level_number==1 && move_number%3==0)
+		{
+			Calendar c = Calendar.getInstance(); 
+			int seconds = c.get(Calendar.SECOND);
+//			System.out.println("Seconds "+seconds);
+			int move[] = possibleMoves.get(((seconds)%(possibleMoves.size())));
+//			for(int i=0;i<move.length;i++)
+//				System.out.println(move[i]);
+			return new int[] {1111,move[0],move[1],move[2]};
+		}
 		if(depth==0 || possibleMoves.isEmpty())
 		{
 			return new int[] {evaluate(),moveX,moveY,value};
@@ -44,7 +86,7 @@ public class AIPlayer {
 		{
 			for(int[] move: possibleMoves)
 			{
-				System.out.println("move[0]="+move[0]+" move[1]=" + move[1] + " move[2]="+move[2]);
+	//			System.out.println("move[0]="+move[0]+" move[1]=" + move[1] + " move[2]="+move[2]);
 				board[move[0]][move[1]] = move[2];
 				if(seed == player.human)
 				{

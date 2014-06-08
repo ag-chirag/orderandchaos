@@ -1,21 +1,22 @@
 package com.chirag.sudoku;
 
-import java.util.Random;
-import android.R.string;
+import java.net.Socket;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import chirag.orderchaos.R;
@@ -25,7 +26,12 @@ public class SetBoard extends Activity {
 
 	String letter;
 	private int i,j;
+	Handler mHandler;
+	static BluetoothSocket socket;
 	private int[][] history = new int[2][2];
+    public int ret_val;
+    SharedPreferences.Editor editor;
+	AIPlayer bot;
 	public enum xORo
 	{
 		O(1),X(2);
@@ -39,10 +45,30 @@ public class SetBoard extends Activity {
 			return value;
 		}
 	}	
+	
+	public enum level
+	{
+		easy(1),medium(2),extreme(3);
+		int value;
+		level(int p)
+		{
+			value = p;
+		}
+		public int getValue()
+		{
+			return value;
+		}
+	}
+	
+	level level;
 	xORo xo;
-	int AI=0,botTurn=0;
-	theGame game = new theGame();
-	AIPlayer bot = new AIPlayer();
+	int AI=-1,botTurn=0;
+	int BT=-1,BTTurn=-1,level_number=-1;
+	int tglLock = -1;
+	int[]  BTarr = new int[3];
+	ConnectedSocket cs;
+	TheGame game = new TheGame();
+//	AIPlayer bot = new AIPlayer();
 	public void onCreate(Bundle savedInstanceState) 
 	{
         super.onCreate(savedInstanceState);
@@ -53,163 +79,415 @@ public class SetBoard extends Activity {
         
         Bundle extras = getIntent().getExtras();
         if(extras!=null)
-        	AI = extras.getInt("AIPlayer"); 
+        {
+        	AI = extras.getInt("AIPlayer");
+        	BT = extras.getInt("Bluetooth");
+        	BTTurn = extras.getInt("yourTurn");
+        	level_number = extras.getInt("level");
+  //  		System.out.println("Level number from extras "+level_number);
+    		bot = new AIPlayer(level_number);
+        }
+        
+        
+      if(BT==1)
+      {
+        if(BTTurn==1)
+        {
+        	enableBoard(true);
+        	tglLock = 0;
+        }
+        if(BTTurn==0)
+        {
+        	enableBoard(false);
+        	tglLock = 1;
+        }
+        mHandler = new Handler(getMainLooper()) {
+            public void handleMessage(Message msg) {
+  //          	int cons = 0x7f080001;
+                BTarr = (int[]) msg.obj;
+  //              int id = (6-BTarr[2])+ 6*(BTarr[1]) + cons;
+                int id  = id(BTarr[1],BTarr[2]);
+                tglLock = 0;
+                if(BTarr[0]==2)
+                	((ToggleButton) findViewById(R.id.x)).performClick();
+              
+                if(BTarr[0]==1)
+                	((ToggleButton) findViewById(R.id.o)).performClick();
+        		((Button) findViewById(id)).performClick();
+        	//	enableBoard(true);
+            }
+        } ;
+        cs = new ConnectedSocket(MainActivity.mainSocket,mHandler);
+        cs.start();
+      }
+      
+      
 	}
 	
 	public void position(int id)
 	{
-		int cons = 0x7f080001;
+		switch(id)
+		{
+			case R.id.one:
+			{
+				i=0;j=5;
+				break;
+			}
+			case R.id.two:
+			{
+				i=0;j=4;
+				break;
+			}
+			case R.id.three:
+			{
+				i=0;j=3;
+				break;
+			}
+			case R.id.four:
+			{
+				i=0;j=2;
+				break;
+			}
+			case R.id.five:
+			{
+				i=0;j=1;
+				break;
+			}
+			case R.id.six:
+			{
+				i=0;j=0;
+				break;
+			}
+			case R.id.seven:
+			{
+				i=1;j=5;
+				break;
+			}
+			case R.id.eight:
+			{
+				i=1;j=4;
+				break;
+			}
+			case R.id.nine:
+			{
+				i=1;j=3;
+				break;
+			}
+			case R.id.ten:
+			{
+				i=1;j=2;
+				break;
+			}
+			case R.id.eleven:
+			{
+				i=1;j=1;
+				break;
+			}
+			case R.id.twelfth:
+			{
+				i=1;j=0;
+				break;
+			}
+			case R.id.thirteen:
+			{
+				i=2;j=5;
+				break;
+			}
+			case R.id.fourteen:
+			{
+				i=2;j=4;
+				break;
+			}
+			case R.id.fifteen:
+			{
+				i=2;j=3;
+				break;
+			}
+			case R.id.sixteen:
+			{
+				i=2;j=2;
+				break;
+			}
+			case R.id.seventeen:
+			{
+				i=2;j=1;
+				break;
+			}
+			case R.id.eighteen:
+			{
+				i=2;j=0;
+				break;
+			}
+			case R.id.nineteen:
+			{
+				i=3;j=5;
+				break;
+			}
+			case R.id.twenty:
+			{
+				i=3;j=4;
+				break;
+			}
+			case R.id.two_one:
+			{
+				i=3;j=3;
+				break;
+			}
+			case R.id.two_two:
+			{
+				i=3;j=2;
+				break;
+			}
+			case R.id.two_three:
+			{
+				i=3;j=1;
+				break;
+			}
+			case R.id.two_four:
+			{
+				i=3;j=0;
+				break;
+			}
+			case R.id.two_five:
+			{
+				i=4;j=5;
+				break;
+			}
+			case R.id.two_six:
+			{
+				i=4;j=4;
+				break;
+			}
+			case R.id.two_seven:
+			{
+				i=4;j=3;
+				break;
+			}
+			case R.id.two_eight:
+			{
+				i=4;j=2;
+				break;
+			}
+			case R.id.two_nine:
+			{
+				i=4;j=1;
+				break;
+			}
+			case R.id.thirty:
+			{
+				i=4;j=0;
+				break;
+			}
+			case R.id.three_one:
+			{
+				i=5;j=5;
+				break;
+			}
+			case R.id.three_two:
+			{
+				i=5;j=4;
+				break;
+			}
+			case R.id.three_three:
+			{
+				i=5;j=3;
+				break;
+			}
+			case R.id.three_four:
+			{
+				i=5;j=2;
+				break;
+			}
+			case R.id.three_five:
+			{
+				i=5;j=1;
+				break;
+			}
+			case R.id.three_six:
+			{
+				i=5;j=0;
+				break;
+			}
+		}
+	}
+
+	public int id(int i,int j)
+
+	{
 		
-		if(id==cons+1)
+		if(i==0 && j==5) 
 		{
-			j=5;i=0;
+			return R.id.one;
 		}
-		else if(id==cons+2)
+		else if(i==0 && j==4)
 		{
-			j=4;i=0;
+			return R.id.two;
 		}
-		else if(id==cons+3)
+		else if (i==0 && j==3)
 		{
-			j=3;i=0;
+			return R.id.three;
 		}
-		else if(id==cons+4)
+		else if(i==0 && j==2)
 		{
-			j=2;i=0;
+			return R.id.four;
 		}
-		else if(id==cons+5)
+		else if(i==0 && j==1)
 		{
-			j=1;i=0;
+			return R.id.five;
 		}
-		else if(id==cons+6)
+		else if(i==0 && j==0)
 		{
-			j=0;i=0;
+			return R.id.six;
 		}
-		else if(id==cons+7)
+		else if(i==1 && j==5)
+		{	
+			return R.id.seven;
+		}
+		else if(i==1 && j==4)
 		{
-			j=5;i=1;
+			return R.id.eight;
 		}
-		else if(id==cons+8)
+		else if(i==1 && j==3)
 		{
-			j=4;i=1;
+			return R.id.nine;
 		}
-		else if(id==cons+9)
+		else if(i==1 && j==2)
 		{
-			j=3;i=1;
+			return R.id.ten;
 		}
-		else if(id==cons+10)
+		else if(i==1 && j==1)
 		{
-			j=2;i=1;
+			return R.id.eleven;
 		}
-		else if(id==cons+11)
+		else if(i==1 && j==0)
 		{
-			j=1;i=1;
+			return R.id.twelfth;
 		}
-		else if(id==cons+12)
+		else if(i==2 && j==5)
 		{
-			j=0;i=1;
+			return R.id.thirteen;
 		}
-		else if(id==cons+13)
+		else if(i==2 && j==4)
 		{
-			j=5;i=2;
+			return R.id.fourteen;
 		}
-		else if(id==cons+14)
+		else if(i==2 && j==3)
 		{
-			j=4;i=2;
+			return R.id.fifteen;
 		}
-		else if(id==cons+15)
+		else if(i==2 && j==2)
 		{
-			j=3;i=2;
+			return R.id.sixteen;
 		}
-		else if(id==cons+16)
+		else if(i==2 && j==1)
 		{
-			j=2;i=2;
+			return R.id.seventeen;
 		}
-		else if(id==cons+17)
+		else if(i==2 && j==0)
 		{
-			j=1;i=2;
+			return R.id.eighteen;
 		}
-		else if(id==cons+18)
+		else if(i==3 && j==5)
 		{
-			j=0;i=2;
+			return R.id.nineteen;
 		}
-		else if(id==cons+19)
+		else if(i==3 && j==4)
 		{
-			j=5;i=3;
+			return R.id.twenty;
 		}
-		else if(id==cons+20)
+		else if(i==3 && j==3)
 		{
-			j=4;i=3;
+			return R.id.two_one;
 		}
-		else if(id==cons+21)
+		else if(i==3 && j==2)
 		{
-			j=3;i=3;
+			return R.id.two_two;
 		}
-		else if(id==cons+22)
+		else if(i==3 && j==1)
 		{
-			j=2;i=3;
+			return R.id.two_three;
 		}
-		else if(id==cons+23)
+		else if(i==3 && j==0)
 		{
-			j=1;i=3;
+			return R.id.two_four;
 		}
-		else if(id==cons+24)
+		else if(i==4 && j==5)
 		{
-			j=0;i=3;
+			return R.id.two_five;
 		}
-		else if(id==cons+25)
+		else if(i==4 && j==4)
 		{
-			j=5;i=4;
+			return R.id.two_six;
 		}
-		else if(id==cons+26)
+		else if(i==4 && j==3)
 		{
-			j=4;i=4;
+			return R.id.two_seven;
 		}
-		else if(id==cons+27)
+		else if(i==4 && j==2)
 		{
-			j=3;i=4;
+			return R.id.two_eight;
 		}
-		else if(id==cons+28)
+		else if(i==4 && j==1)
 		{
-			j=2;i=4;
+			return R.id.two_nine;
 		}
-		else if(id==cons+29)
+		else if(i==4 && j==0)
 		{
-			j=1;i=4;
+			return R.id.thirty;
 		}
-		else if(id==cons+30)
+		else if(i==5 && j==5)
 		{
-			j=0;i=4;
+			return R.id.three_one;
 		}
-		else if(id==cons+31)
+		else if(i==5 && j==4)
 		{
-			j=5;i=5;
+			return R.id.three_two;
 		}
-		else if(id==cons+32)
+		else if(i==5 && j==3)
 		{
-			j=4;i=5;
+			return R.id.three_three;
 		}
-		else if(id==cons+33)
+		else if(i==5 && j==2)
 		{
-			j=3;i=5;
+			return R.id.three_four;
 		}
-		else if(id==cons+34)
+		else if(i==5 && j==1)
 		{
-			j=2;i=5;
+			return R.id.three_five;
 		}
-		else if(id==cons+35)
+		else if(i==5 && j==0)
 		{
-			j=1;i=5;
+			return R.id.three_six;
 		}
-		else 
-		{
-			j=0;i=5;
-		}
+		return 0;
+	}
+	
+	public  void enableBoard(boolean bool)
+	{
+		int id;
+		Button b;
+		for(int i=0;i<6;i++)
+			for(int j=0;j<6;j++)
+			{
+				id = id(i,j);
+				b = ((Button)findViewById(id));
+				b.setEnabled(bool);
+			}
+		
+	//	((ToggleButton)findViewById(R.id.x)).setEnabled(bool);
+	//	((ToggleButton)findViewById(R.id.o)).setEnabled(bool);
 	}
 	
 	
 	public void tgl(View v)
 	{
 
+		if(BT==1 && tglLock==1)
+		{	
+			((ToggleButton) findViewById(R.id.o)).setChecked(false);
+			((ToggleButton) findViewById(R.id.x)).setChecked(false);
+			textToast("Not Your Turn!",Toast.LENGTH_SHORT);
+		}
     	
 		if(v.getId()==R.id.x)
 		{
@@ -230,40 +508,75 @@ public class SetBoard extends Activity {
 
 	}
 	
-	
+
 	public void play(View v)
 	{
-//		System.out.println("Click Performed");
-		
+	
 		ToggleButton tb1 =  (ToggleButton) findViewById(R.id.x);
 		ToggleButton tb2 =  (ToggleButton) findViewById(R.id.o);
 		if(tb1.isChecked() || tb2.isChecked())
 		{
-			position(v.getId());
 			
+			position(v.getId());;
 			((Button) findViewById(v.getId())).setText(letter);
 			((Button) findViewById(v.getId())).setEnabled(false);
-			if(game.setValue(xo.getValue(),i,j)==1)
-				textToast("Order Wins!");
-
+			
+			if((ret_val=game.setValue(xo.getValue(),i,j))==1)
+			{
+				textToast("Order Wins!",Toast.LENGTH_LONG);
+				if(BT==1)BT=2; if(AI==1) AI=2;
+				int orderwins = getSharedPreferences("order",0).getInt("orderwins",0);
+	        	editor = getSharedPreferences("order",0).edit();
+	        	editor.putInt("orderwins", orderwins+1);
+	        	editor.commit();
+				((ImageButton) findViewById(R.id.refresh)).performClick();
+			}
+			else if(ret_val==2)
+			{
+				textToast("Chaos Wins!",Toast.LENGTH_LONG);
+				if(BT==1)BT=2; if(AI==1) AI=2;
+		        int chaoswins = getSharedPreferences("chaos",0).getInt("chaoswins",0);
+	        	editor = getSharedPreferences("chaos",0).edit();
+	        	editor.putInt("chaoswins", chaoswins+1);
+	        	editor.commit();		        
+				((ImageButton) findViewById(R.id.refresh)).performClick();
+			}
 			tb1.setChecked(false);
 			tb2.setChecked(false);
+			
+			if(BT==1)
+			{
+				if(BTTurn==1)
+				{	
+					byte[] bytes = {(byte) xo.getValue(),(byte) i,(byte) j};
+				
+					cs.write(bytes);
+					BTTurn = 0;
+	        		tglLock=1;
+					enableBoard(false);
+				}
+				else
+				{
+					BTTurn = 1;
+	        		tglLock=0;
+					enableBoard(true);
+				}
+				//
+			}
 			botTurn++;
 			if(AI==1 && ((botTurn)%2==1))
-				botMove();
+				botMove(level_number);
 		}
-
+		
+		if(BT==2)BT=1; if(AI==2) AI=1;
 	}
 	
-	void botMove()
+	void botMove(int level_number)
 	{
-//		System.out.println("From botMove");
-		int[] move = (new AIPlayer()).Board(game.arr);
-		int cons = 0x7f080001;
-//		System.out.println("move[1] = "+ move[1] + " move[2] = "+ move[2]);
-//		System.out.println("score = " + move[0]);
-//		System.out.println("x="+move[1] + " y="+move[2]);
-		int id = (6-move[2])+ 6*(move[1]) + cons;
+//		System.out.println("Level number in SetBoard "+level_number);
+		int[] move = bot.Board(game.arr);
+		
+		int id = id(move[1],move[2]);
 		if(move[3]==1)
 			((ToggleButton) findViewById(R.id.o)).performClick();
 		else
@@ -272,10 +585,10 @@ public class SetBoard extends Activity {
 		((Button) findViewById(id)).performClick();
 	}
 	
-	public void textToast(String textToDisplay) {
+	public void textToast(String textToDisplay,int duration) {
 		Context context = getApplicationContext();
 		CharSequence text = textToDisplay;
-		int duration = Toast.LENGTH_SHORT;
+	//	int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.setGravity(Gravity.TOP|Gravity.LEFT, 50, 50);
@@ -284,9 +597,67 @@ public class SetBoard extends Activity {
 
 	public void undo(View v)
 	{
-		
+		Context context = getApplicationContext();
+		int ai = AI;
+        int[] undo_position = game.undo_move(context);
+        if(undo_position[0]==-1 && undo_position[1]==-1)
+        	return;
+        int id = id(undo_position[0],undo_position[1]);
+		((Button) findViewById(id)).setText(" ");
+		((Button) findViewById(id)).setEnabled(true);
+		if(ai==1)
+		{
+			ai=0;
+			bot.move_number--;
+			undo_position = 	game.undo_move(context);
+			 id = id(undo_position[0],undo_position[1]);
+			((Button) findViewById(id)).setText(" ");
+			((Button) findViewById(id)).setEnabled(true);
+		}
 	}
-
+	
+	public void reset(View v)
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Do you want to reset the Board?").setPositiveButton("Yes", dialogClickListener)
+		    .setNegativeButton("No", dialogClickListener).show();
+	}
+	
+	DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+	    @Override
+	    public void onClick(DialogInterface dialog, int which) {
+	    	Button b;
+			int id;
+	        switch (which){
+	        case DialogInterface.BUTTON_POSITIVE:
+	            //Yes button clicked
+	        {
+	    		for(int i=0;i<6;i++)
+	    			for(int j=0;j<6;j++)
+	    			{
+//	    				id = (6-j) + 6*i + cons;
+	    				id = id(i,j);
+	    				b = ((Button)findViewById(id));
+	    				b.setText(" ");
+	    				b.setEnabled(true);
+	    			}
+	    		game.cleanArray();
+	    		break;
+	        }
+	        case DialogInterface.BUTTON_NEGATIVE:
+	            //No button clicked
+	            break;
+	        }
+	    }
+	};
+	
+	protected void onDestroy()
+	{
+		if(BT==1)
+			cs.cancel();
+		super.onDestroy();
+	}
+	
 }
 
 

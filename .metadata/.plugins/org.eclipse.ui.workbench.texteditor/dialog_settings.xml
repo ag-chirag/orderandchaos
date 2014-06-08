@@ -2,8 +2,8 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
-		<item value="119" key="DIALOG_Y_ORIGIN"/>
-		<item value="563" key="DIALOG_X_ORIGIN"/>
+		<item value="110" key="DIALOG_Y_ORIGIN"/>
+		<item value="976" key="DIALOG_X_ORIGIN"/>
 		<item value="380" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
@@ -13,15 +13,26 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="position" key="selection"/>
+		<item value="enableBoard" key="selection"/>
 		<list key="findhistory">
-			<item value="position"/>
-			<item value="dp"/>
-			<item value="px"/>
+			<item value="enableBoard"/>
+			<item value="mainSocket"/>
+			<item value="client"/>
+			<item value="android:layout_marginRight=&quot;50px&quot;"/>
+			<item value="android:layout_marginLeft=&quot;10px&quot;"/>
+			<item value="android:layout_marginLeft=&quot;15px&quot;"/>
+			<item value="android:layout_marginTop=&quot;5px&quot;"/>
+			<item value="android:layout_marginTop=&quot;40px&quot;"/>
 		</list>
 		<list key="replacehistory">
-			<item value="px"/>
-			<item value="dp"/>
+			<item value="android:layout_marginRight=&quot;80px&quot;"/>
+			<item value="android:layout_marginLeft=&quot;7px&quot;"/>
+			<item value="android:layout_marginLeft=&quot;10px&quot;"/>
+			<item value="android:layout_marginLeft=&quot;15px&quot;"/>
+			<item value="android:layout_marginTop=&quot;10px&quot;"/>
+			<item value="android:layout_marginTop=&quot;80px&quot;"/>
+			<item value=" android:layout_marginLeft=&quot;15px&quot;"/>
+			<item value="android:layout_height=&quot;100px&quot;"/>
 		</list>
 	</section>
 </section>

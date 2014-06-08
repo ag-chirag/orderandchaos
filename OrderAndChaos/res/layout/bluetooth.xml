@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back" >
+<Button android:id="@+id/discoverable" 
+    		android:background="@drawable/custom_btn_black_pearl"
+            android:layout_width="400px" 
+            android:layout_height="70px"
+            android:text="Make Device Dicoverable" 
+            android:layout_centerHorizontal="true"            
+            android:textSize="30px"
+            android:padding="0px" 
+            style="@style/btnStyleBlackpearl"     
+            android:layout_marginTop="20px"       
+/> 
+
+<Button android:id="@+id/scan" 
+    		android:background="@drawable/custom_btn_black_pearl"    
+            android:layout_below="@id/discoverable"
+            android:layout_width="400px" 
+            android:layout_height="70px"
+            android:text="Scan for Devices" 
+            android:layout_centerHorizontal="true"            
+            android:textSize="30px"
+            android:padding="0px" 
+			android:onClick="find" 
+            style="@style/btnStyleBlackpearl"
+            android:layout_marginTop="20px"            			/>           
+ <ListView
+           android:id="@+id/listView1"
+           android:layout_below="@id/scan"
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent" 
+           android:listSelector="@android:color/transparent"
+           android:cacheColorHint="@android:color/transparent"           
+           >
+</ListView> 
+</RelativeLayout>

@@ -1,0 +1,194 @@
+package com.chirag.sudoku;
+
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Vector;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import chirag.orderchaos.R;
+public class BluetoothMode extends Activity{
+
+    @SuppressLint("NewApi")
+    BluetoothAdapter myBluetoothAdapter;
+    Set<BluetoothDevice> pairedDevices;
+    ListView myListView;
+    ArrayAdapter<String> BTArrayAdapter;
+    Vector BTDevice = new Vector();
+    Vector BTDeviceAddress = new Vector();
+    BluetoothDevice selected_device;
+    Handler mHandler;
+    Context context;
+	public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.bluetooth);  
+        context = getApplicationContext();
+	final int REQUEST_DISCOVERABLE_BT = 0;
+    myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+     
+   // Looper.prepare();
+    mHandler = new Handler(getMainLooper()) {
+        public void handleMessage(Message msg) {
+            if(msg.obj.equals(10))
+            {
+            	
+ //           	System.out.println("Inside Handler\n");
+            	Intent i = new Intent(context, SetBoard.class);
+            	i.putExtra("Bluetooth", 1);
+            	i.putExtra("yourTurn", 1);
+            	i.putExtra("AIPlayer", -1);
+            	i.putExtra("level",-1);
+            	BluetoothMode.this.finish();
+    		    startActivity(i);
+    			Toast toast = Toast.makeText(context, "You Are Order!", Toast.LENGTH_LONG);
+    			toast.setGravity(Gravity.TOP|Gravity.LEFT, 50, 50);
+    			Toast toast_two = Toast.makeText(context, "You Go First!", Toast.LENGTH_LONG);
+    			toast_two.setGravity(Gravity.TOP|Gravity.RIGHT, 50, 50);
+    			toast.show();
+    			toast_two.show();
+    			
+            }
+            if(msg.obj.equals(20))
+            {
+ //           	System.out.println("Inside Handler\n");
+            	Intent i = new Intent(context, SetBoard.class);
+            	i.putExtra("Bluetooth", 1);
+            	i.putExtra("yourTurn", 0);
+            	i.putExtra("AIPlayer", -1);
+            	i.putExtra("level",-1);
+    		    startActivity(i);
+    		    BluetoothMode.this.finish();
+    			Toast toast = Toast.makeText(context, "You are Chaos!", Toast.LENGTH_LONG);
+    			toast.setGravity(Gravity.TOP|Gravity.LEFT, 50, 50);
+    			toast.show();
+
+            }
+  //          System.out.println("Outside if\n");
+        }
+     };
+     
+     final ServerThread st = new ServerThread(myBluetoothAdapter,context,mHandler); 
+     st.start();
+    Button discoverable = ((Button)findViewById(R.id.discoverable));
+    myListView = (ListView)findViewById(R.id.listView1);
+    // create the arrayAdapter that contains the BTDevices, and set it to the ListView
+    BTArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+    myListView.setAdapter(BTArrayAdapter);
+
+    list();
+    discoverable.setOnClickListener(new View.OnClickListener() {  
+  	     @Override  
+  	        public void onClick(View arg0) {  
+  	            if (!myBluetoothAdapter.isDiscovering()) {  
+  	                  //out.append("MAKING YOUR DEVICE DISCOVERABLE");  
+  	                   Toast.makeText(getApplicationContext(), "MAKING YOUR DEVICE DISCOVERABLE",  
+  	             Toast.LENGTH_SHORT);  
+  	  
+  	                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);  
+  	                startActivityForResult(enableBtIntent, REQUEST_DISCOVERABLE_BT);  
+  	                    
+  	            }  
+  	        }  
+  	    });
+    myListView.setClickable(true);
+    myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+      @Override
+      public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+        String s = (String)myListView.getItemAtPosition(position);
+        selected_device = (BluetoothDevice)BTDevice.elementAt(position);
+    	st.interrupt();
+    	ClientThread ct = new ClientThread(selected_device,myBluetoothAdapter,getApplicationContext(),mHandler);
+    	ct.start();	
+      }
+    });
+
+    }
+    
+    public void list(){
+    	      // get paired devices
+    	      pairedDevices = myBluetoothAdapter.getBondedDevices();
+    	      // put it's one to the adapter
+    	      for(BluetoothDevice device : pairedDevices)
+    	      {
+    	    	  BTArrayAdapter.add(device.getName()+ "\n");
+    	    	  BTDevice.addElement(device);
+    	    	  BTDeviceAddress.addElement(device.getAddress());
+    	      }
+    	   }
+
+    final BroadcastReceiver bReceiver = new BroadcastReceiver() {
+    	        public void onReceive(Context context, Intent intent) {
+    	            String action = intent.getAction();
+    	            // When discovery finds a device
+    	            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+    	                 // Get the BluetoothDevice object from the Intent
+    	                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+    	                 // add the name and the MAC address of the object to the arrayAdapter
+    	                 BTArrayAdapter.add(device.getName()+"\n");
+    	                 BTDevice.addElement(device);
+    	                 BTDeviceAddress.addElement(device.getAddress());
+    	                 BTArrayAdapter.notifyDataSetChanged();
+    	            }
+    	        }
+    	    };
+
+   public void onDestroy(View view)
+   {
+    	unregisterReceiver(bReceiver);
+    	super.onDestroy();
+   }
+   public void onPause(View view)
+   {
+    	unregisterReceiver(bReceiver);
+    	super.onDestroy();
+   } 	     
+   
+   public void onStop(View view)
+   {
+    	unregisterReceiver(bReceiver);
+    	super.onDestroy();
+   }
+   
+    public void find(View view) {
+    	       if (myBluetoothAdapter.isDiscovering()) {
+    	           // the button is pressed when it discovers, so cancel the discovery
+    	           myBluetoothAdapter.cancelDiscovery();
+    	       }
+    	       else {
+    	            BTArrayAdapter.clear();
+    	            BTDevice.clear();
+    	            BTDeviceAddress.clear();
+    	            myBluetoothAdapter.startDiscovery();
+    	            registerReceiver(bReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));   
+    	       }
+    	   }
+}
+
+
+
