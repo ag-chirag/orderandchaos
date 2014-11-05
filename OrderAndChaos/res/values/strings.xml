@@ -5,5 +5,20 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="tutorial">Tutorial</string>
-
+    <string name="reset">RESET</string>
+    <string name="undo">UNDO</string>
+    <string name="single">Single Player</string>
+    <string name="two_player">Two Player</string>
+    <string name="stats">Statistics</string>
+    <string name="medium">Medium</string>
+    <string name="easy">Easy</string>
+    <string name="extreme">Extreme</string>
+    <string name="bluetooth">Via Bluetooth</string>
+    <string name="device">Same Device</string>
+    <string name="order">Order   </string>
+    <string name="chaos">Chaos   </string>
+    <string name="discover">Make Device Dicoverable</string>
+    <string name="scan">Scan for Devices</string>
+    <string name="exit">Exit</string>
+    <string name="space"> </string>
 </resources>

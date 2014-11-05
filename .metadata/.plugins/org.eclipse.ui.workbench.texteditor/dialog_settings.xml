@@ -13,26 +13,26 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="enableBoard" key="selection"/>
+		<item value="dp" key="selection"/>
 		<list key="findhistory">
-			<item value="enableBoard"/>
-			<item value="mainSocket"/>
-			<item value="client"/>
-			<item value="android:layout_marginRight=&quot;50px&quot;"/>
-			<item value="android:layout_marginLeft=&quot;10px&quot;"/>
-			<item value="android:layout_marginLeft=&quot;15px&quot;"/>
-			<item value="android:layout_marginTop=&quot;5px&quot;"/>
-			<item value="android:layout_marginTop=&quot;40px&quot;"/>
+			<item value="px"/>
+			<item value="android:textSize=&quot;50sp&quot;"/>
+			<item value="android:layout_height=&quot;35dp&quot;"/>
+			<item value="android:layout_width=&quot;35dp&quot;"/>
+			<item value="            android:layout_width=&quot;35dp&quot;"/>
+			<item value="android:layout_height=&quot;70dp&quot;"/>
+			<item value="android:layout_width=&quot;70dp&quot;"/>
+			<item value="android:text=&quot; &quot;"/>
 		</list>
 		<list key="replacehistory">
-			<item value="android:layout_marginRight=&quot;80px&quot;"/>
-			<item value="android:layout_marginLeft=&quot;7px&quot;"/>
-			<item value="android:layout_marginLeft=&quot;10px&quot;"/>
-			<item value="android:layout_marginLeft=&quot;15px&quot;"/>
-			<item value="android:layout_marginTop=&quot;10px&quot;"/>
-			<item value="android:layout_marginTop=&quot;80px&quot;"/>
-			<item value=" android:layout_marginLeft=&quot;15px&quot;"/>
-			<item value="android:layout_height=&quot;100px&quot;"/>
+			<item value="dp"/>
+			<item value="android:textSize=&quot;35sp&quot;"/>
+			<item value="android:layout_height=&quot;50dp&quot;"/>
+			<item value="android:layout_width=&quot;50dp&quot;"/>
+			<item value="android:layout_height=&quot;35dp&quot;"/>
+			<item value="android:layout_width=&quot;35dp&quot;"/>
+			<item value="android:text=&quot;@string/space&quot;"/>
+			<item value="android:textSize=&quot;50sp&quot;"/>
 		</list>
 	</section>
 </section>

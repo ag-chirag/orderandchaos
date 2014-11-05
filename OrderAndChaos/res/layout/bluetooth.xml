@@ -7,28 +7,28 @@
     android:background="@drawable/back" >
 <Button android:id="@+id/discoverable" 
     		android:background="@drawable/custom_btn_black_pearl"
-            android:layout_width="400px" 
-            android:layout_height="70px"
-            android:text="Make Device Dicoverable" 
+            android:layout_width="290dp" 
+            android:layout_height="50dp"
+            android:text="@string/discover" 
             android:layout_centerHorizontal="true"            
-            android:textSize="30px"
+            android:textSize="25sp"
             android:padding="0px" 
             style="@style/btnStyleBlackpearl"     
-            android:layout_marginTop="20px"       
+            android:layout_marginTop="20dp"       
 /> 
 
 <Button android:id="@+id/scan" 
     		android:background="@drawable/custom_btn_black_pearl"    
             android:layout_below="@id/discoverable"
-            android:layout_width="400px" 
-            android:layout_height="70px"
-            android:text="Scan for Devices" 
+            android:layout_width="290dp" 
+            android:layout_height="50dp"
+            android:text="@string/scan" 
             android:layout_centerHorizontal="true"            
-            android:textSize="30px"
+            android:textSize="30sp"
             android:padding="0px" 
 			android:onClick="find" 
             style="@style/btnStyleBlackpearl"
-            android:layout_marginTop="20px"            			/>           
+            android:layout_marginTop="20dp"            			/>           
  <ListView
            android:id="@+id/listView1"
            android:layout_below="@id/scan"

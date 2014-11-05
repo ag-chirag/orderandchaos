@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 public class AIPlayer {
 	
 	enum player{
@@ -25,7 +26,7 @@ public class AIPlayer {
 	}
 	
 	level level;
-	int level_number,move_number;
+	int level_number,move_number,depth_original;
 	int[][] board = new int[6][6];
 	static final int comp_gain = 500;
 	static final int inf_pos = 2000000;
@@ -60,22 +61,26 @@ public class AIPlayer {
 			depth=2;
 //		System.out.println("Depth "+depth);
 		move_number++;
+		depth_original = depth;
 		return minmax(depth,player.computer,inf_neg,inf_pos);	
 	}
 	
+	int[] randomMove(List<int[]> possibleMoves)
+	{
+		Calendar c = Calendar.getInstance(); 
+		int seconds = c.get(Calendar.SECOND);
+		return possibleMoves.get(((seconds)%(possibleMoves.size())));
+	}
 	
 	int [] minmax(int depth,player seed,int alpha,int beta)
 	{
 		int moveX=-1,moveY=-1,value=-1,score=0;
 		List<int[]> possibleMoves = generateMoves();
+		List<int[]> finalMoves = new ArrayList<int[]>();
+		
 		if(level_number==1 && move_number%3==0)
 		{
-			Calendar c = Calendar.getInstance(); 
-			int seconds = c.get(Calendar.SECOND);
-//			System.out.println("Seconds "+seconds);
-			int move[] = possibleMoves.get(((seconds)%(possibleMoves.size())));
-//			for(int i=0;i<move.length;i++)
-//				System.out.println(move[i]);
+			int[] move = randomMove(possibleMoves);
 			return new int[] {1111,move[0],move[1],move[2]};
 		}
 		if(depth==0 || possibleMoves.isEmpty())
@@ -84,25 +89,44 @@ public class AIPlayer {
 		}
 		else
 		{
+			int score_highest=inf_neg;
 			for(int[] move: possibleMoves)
 			{
-	//			System.out.println("move[0]="+move[0]+" move[1]=" + move[1] + " move[2]="+move[2]);
+				int[] current_move;
 				board[move[0]][move[1]] = move[2];
+				
 				if(seed == player.human)
 				{
-					score = minmax(depth-1,player.computer,alpha,beta)[0];
+					current_move = minmax(depth-1,player.computer,alpha,beta);
+					score = current_move[0];
 					if(score<=beta)
 					{
 						beta = score;
 						moveX = move[0];
 						moveY = move[1];
 						value = move[2];
-					}
-					
+					}	
 				}
+				
 				else
 				{
-					score = minmax(depth-1,player.human,alpha,beta)[0];
+					current_move = minmax(depth-1,player.human,alpha,beta);
+					score = current_move[0];
+					
+					if(depth==depth_original)
+					{
+						if(score>score_highest)
+						{
+							score_highest = score;
+							finalMoves.clear();
+							finalMoves.add(move);
+						}
+						else if(score==score_highest)
+						{
+							finalMoves.add(move);
+						}
+					}
+					
 					if(score>=alpha)
 					{
 						alpha = score;
@@ -113,8 +137,22 @@ public class AIPlayer {
 				}
 				
 				board[move[0]][move[1]] = -1;
+				
 				if(alpha>beta)
 					break;
+				
+			}
+			if(depth==depth_original)
+			{
+				for(int[] move: finalMoves)
+				{
+					Log.i("moves",move[0]+" "+move[1]+" "+move[2]);
+				}
+				int[] move = randomMove(finalMoves);
+				moveX = move[0];
+				moveY = move[1];
+				value = move[2];
+				 
 			}
 			return new int[]{(seed==player.computer)?alpha:beta,moveX,moveY,value};
 		}	

@@ -10,35 +10,35 @@
                 
     <TextView
         android:id="@+id/txtview"
-        android:layout_width="1px"
-        android:layout_height="1px"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
         android:layout_centerInParent="true"
         android:text="" />
 
     <Button android:id="@+id/bluetooth"
             android:background="@drawable/custom_btn_black_pearl"
-            android:layout_width="350px" 
-            android:layout_height="70px"
-            android:text="Via Bluetooth"
-            android:layout_marginTop="10px"
+            android:layout_width="230dp" 
+            android:layout_height="50dp"
+            android:text="@string/bluetooth"
+            android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
              android:layout_below="@id/txtview"
-            android:textSize="50px"
-            android:padding="0px"
+            android:textSize="30sp"
+            android:padding="0dp"
             android:onClick="bluetooth"
             style="@style/btnStyleBlackpearl" /> 
             
     <Button android:id="@+id/device"
             android:background="@drawable/custom_btn_black_pearl"
-            android:layout_width="350px" 
-            android:layout_height="70px"
+            android:layout_width="230dp" 
+            android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:layout_above="@id/txtview"
-            android:layout_marginBottom="10px"
-            android:text="Same Device"
-            android:textSize="50px"
+            android:layout_marginBottom="10dp"
+            android:text="@string/device"
+            android:textSize="30sp"
             android:onClick="toBoard"
-            android:padding="0px"
+            android:padding="0dp"
             style="@style/btnStyleBlackpearl" />   
                               
 </RelativeLayout>    

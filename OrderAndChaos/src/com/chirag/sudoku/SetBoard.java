@@ -1,16 +1,15 @@
 package com.chirag.sudoku;
-
-import java.net.Socket;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -29,13 +28,13 @@ public class SetBoard extends Activity {
 	Handler mHandler;
 	static BluetoothSocket socket;
 	private int[][] history = new int[2][2];
-    public int ret_val;
-    SharedPreferences.Editor editor;
+	public int ret_val;
+	SharedPreferences.Editor editor;
 	AIPlayer bot;
 	public enum xORo
 	{
 		O(1),X(2);
-		 int value;
+		int value;
 		xORo(int p)
 		{
 			value = p;
@@ -45,7 +44,7 @@ public class SetBoard extends Activity {
 			return value;
 		}
 	}	
-	
+
 	public enum level
 	{
 		easy(1),medium(2),extreme(3);
@@ -59,7 +58,7 @@ public class SetBoard extends Activity {
 			return value;
 		}
 	}
-	
+
 	level level;
 	xORo xo;
 	int AI=-1,botTurn=0;
@@ -68,253 +67,253 @@ public class SetBoard extends Activity {
 	int[]  BTarr = new int[3];
 	ConnectedSocket cs;
 	TheGame game = new TheGame();
-//	AIPlayer bot = new AIPlayer();
+	//	AIPlayer bot = new AIPlayer();
 	public void onCreate(Bundle savedInstanceState) 
 	{
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.board);   
-    	 
-        
-        Bundle extras = getIntent().getExtras();
-        if(extras!=null)
-        {
-        	AI = extras.getInt("AIPlayer");
-        	BT = extras.getInt("Bluetooth");
-        	BTTurn = extras.getInt("yourTurn");
-        	level_number = extras.getInt("level");
-  //  		System.out.println("Level number from extras "+level_number);
-    		bot = new AIPlayer(level_number);
-        }
-        
-        
-      if(BT==1)
-      {
-        if(BTTurn==1)
-        {
-        	enableBoard(true);
-        	tglLock = 0;
-        }
-        if(BTTurn==0)
-        {
-        	enableBoard(false);
-        	tglLock = 1;
-        }
-        mHandler = new Handler(getMainLooper()) {
-            public void handleMessage(Message msg) {
-  //          	int cons = 0x7f080001;
-                BTarr = (int[]) msg.obj;
-  //              int id = (6-BTarr[2])+ 6*(BTarr[1]) + cons;
-                int id  = id(BTarr[1],BTarr[2]);
-                tglLock = 0;
-                if(BTarr[0]==2)
-                	((ToggleButton) findViewById(R.id.x)).performClick();
-              
-                if(BTarr[0]==1)
-                	((ToggleButton) findViewById(R.id.o)).performClick();
-        		((Button) findViewById(id)).performClick();
-        	//	enableBoard(true);
-            }
-        } ;
-        cs = new ConnectedSocket(MainActivity.mainSocket,mHandler);
-        cs.start();
-      }
-      
-      
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.board);   
+
+
+		Bundle extras = getIntent().getExtras();
+		if(extras!=null)
+		{
+			AI = extras.getInt("AIPlayer");
+			BT = extras.getInt("Bluetooth");
+			BTTurn = extras.getInt("yourTurn");
+			level_number = extras.getInt("level");
+			//  		System.out.println("Level number from extras "+level_number);
+			bot = new AIPlayer(level_number);
+		}
+
+
+		if(BT==1)
+		{
+			if(BTTurn==1)
+			{
+				enableBoard(true);
+				tglLock = 0;
+			}
+			if(BTTurn==0)
+			{
+				enableBoard(false);
+				tglLock = 1;
+			}
+			mHandler = new Handler(getMainLooper()) {
+				public void handleMessage(Message msg) {
+					//          	int cons = 0x7f080001;
+					BTarr = (int[]) msg.obj;
+					//              int id = (6-BTarr[2])+ 6*(BTarr[1]) + cons;
+					int id  = id(BTarr[1],BTarr[2]);
+					tglLock = 0;
+					if(BTarr[0]==2)
+						((ToggleButton) findViewById(R.id.x)).performClick();
+
+					if(BTarr[0]==1)
+						((ToggleButton) findViewById(R.id.o)).performClick();
+					((Button) findViewById(id)).performClick();
+					//	enableBoard(true);
+				}
+			} ;
+			cs = new ConnectedSocket(MainActivity.mainSocket,mHandler);
+			cs.start();
+		}
+
+
 	}
-	
+
 	public void position(int id)
 	{
 		switch(id)
 		{
-			case R.id.one:
-			{
-				i=0;j=5;
-				break;
-			}
-			case R.id.two:
-			{
-				i=0;j=4;
-				break;
-			}
-			case R.id.three:
-			{
-				i=0;j=3;
-				break;
-			}
-			case R.id.four:
-			{
-				i=0;j=2;
-				break;
-			}
-			case R.id.five:
-			{
-				i=0;j=1;
-				break;
-			}
-			case R.id.six:
-			{
-				i=0;j=0;
-				break;
-			}
-			case R.id.seven:
-			{
-				i=1;j=5;
-				break;
-			}
-			case R.id.eight:
-			{
-				i=1;j=4;
-				break;
-			}
-			case R.id.nine:
-			{
-				i=1;j=3;
-				break;
-			}
-			case R.id.ten:
-			{
-				i=1;j=2;
-				break;
-			}
-			case R.id.eleven:
-			{
-				i=1;j=1;
-				break;
-			}
-			case R.id.twelfth:
-			{
-				i=1;j=0;
-				break;
-			}
-			case R.id.thirteen:
-			{
-				i=2;j=5;
-				break;
-			}
-			case R.id.fourteen:
-			{
-				i=2;j=4;
-				break;
-			}
-			case R.id.fifteen:
-			{
-				i=2;j=3;
-				break;
-			}
-			case R.id.sixteen:
-			{
-				i=2;j=2;
-				break;
-			}
-			case R.id.seventeen:
-			{
-				i=2;j=1;
-				break;
-			}
-			case R.id.eighteen:
-			{
-				i=2;j=0;
-				break;
-			}
-			case R.id.nineteen:
-			{
-				i=3;j=5;
-				break;
-			}
-			case R.id.twenty:
-			{
-				i=3;j=4;
-				break;
-			}
-			case R.id.two_one:
-			{
-				i=3;j=3;
-				break;
-			}
-			case R.id.two_two:
-			{
-				i=3;j=2;
-				break;
-			}
-			case R.id.two_three:
-			{
-				i=3;j=1;
-				break;
-			}
-			case R.id.two_four:
-			{
-				i=3;j=0;
-				break;
-			}
-			case R.id.two_five:
-			{
-				i=4;j=5;
-				break;
-			}
-			case R.id.two_six:
-			{
-				i=4;j=4;
-				break;
-			}
-			case R.id.two_seven:
-			{
-				i=4;j=3;
-				break;
-			}
-			case R.id.two_eight:
-			{
-				i=4;j=2;
-				break;
-			}
-			case R.id.two_nine:
-			{
-				i=4;j=1;
-				break;
-			}
-			case R.id.thirty:
-			{
-				i=4;j=0;
-				break;
-			}
-			case R.id.three_one:
-			{
-				i=5;j=5;
-				break;
-			}
-			case R.id.three_two:
-			{
-				i=5;j=4;
-				break;
-			}
-			case R.id.three_three:
-			{
-				i=5;j=3;
-				break;
-			}
-			case R.id.three_four:
-			{
-				i=5;j=2;
-				break;
-			}
-			case R.id.three_five:
-			{
-				i=5;j=1;
-				break;
-			}
-			case R.id.three_six:
-			{
-				i=5;j=0;
-				break;
-			}
+		case R.id.one:
+		{
+			i=0;j=5;
+			break;
+		}
+		case R.id.two:
+		{
+			i=0;j=4;
+			break;
+		}
+		case R.id.three:
+		{
+			i=0;j=3;
+			break;
+		}
+		case R.id.four:
+		{
+			i=0;j=2;
+			break;
+		}
+		case R.id.five:
+		{
+			i=0;j=1;
+			break;
+		}
+		case R.id.six:
+		{
+			i=0;j=0;
+			break;
+		}
+		case R.id.seven:
+		{
+			i=1;j=5;
+			break;
+		}
+		case R.id.eight:
+		{
+			i=1;j=4;
+			break;
+		}
+		case R.id.nine:
+		{
+			i=1;j=3;
+			break;
+		}
+		case R.id.ten:
+		{
+			i=1;j=2;
+			break;
+		}
+		case R.id.eleven:
+		{
+			i=1;j=1;
+			break;
+		}
+		case R.id.twelfth:
+		{
+			i=1;j=0;
+			break;
+		}
+		case R.id.thirteen:
+		{
+			i=2;j=5;
+			break;
+		}
+		case R.id.fourteen:
+		{
+			i=2;j=4;
+			break;
+		}
+		case R.id.fifteen:
+		{
+			i=2;j=3;
+			break;
+		}
+		case R.id.sixteen:
+		{
+			i=2;j=2;
+			break;
+		}
+		case R.id.seventeen:
+		{
+			i=2;j=1;
+			break;
+		}
+		case R.id.eighteen:
+		{
+			i=2;j=0;
+			break;
+		}
+		case R.id.nineteen:
+		{
+			i=3;j=5;
+			break;
+		}
+		case R.id.twenty:
+		{
+			i=3;j=4;
+			break;
+		}
+		case R.id.two_one:
+		{
+			i=3;j=3;
+			break;
+		}
+		case R.id.two_two:
+		{
+			i=3;j=2;
+			break;
+		}
+		case R.id.two_three:
+		{
+			i=3;j=1;
+			break;
+		}
+		case R.id.two_four:
+		{
+			i=3;j=0;
+			break;
+		}
+		case R.id.two_five:
+		{
+			i=4;j=5;
+			break;
+		}
+		case R.id.two_six:
+		{
+			i=4;j=4;
+			break;
+		}
+		case R.id.two_seven:
+		{
+			i=4;j=3;
+			break;
+		}
+		case R.id.two_eight:
+		{
+			i=4;j=2;
+			break;
+		}
+		case R.id.two_nine:
+		{
+			i=4;j=1;
+			break;
+		}
+		case R.id.thirty:
+		{
+			i=4;j=0;
+			break;
+		}
+		case R.id.three_one:
+		{
+			i=5;j=5;
+			break;
+		}
+		case R.id.three_two:
+		{
+			i=5;j=4;
+			break;
+		}
+		case R.id.three_three:
+		{
+			i=5;j=3;
+			break;
+		}
+		case R.id.three_four:
+		{
+			i=5;j=2;
+			break;
+		}
+		case R.id.three_five:
+		{
+			i=5;j=1;
+			break;
+		}
+		case R.id.three_six:
+		{
+			i=5;j=0;
+			break;
+		}
 		}
 	}
 
 	public int id(int i,int j)
 
 	{
-		
+
 		if(i==0 && j==5) 
 		{
 			return R.id.one;
@@ -461,7 +460,7 @@ public class SetBoard extends Activity {
 		}
 		return 0;
 	}
-	
+
 	public  void enableBoard(boolean bool)
 	{
 		int id;
@@ -473,12 +472,12 @@ public class SetBoard extends Activity {
 				b = ((Button)findViewById(id));
 				b.setEnabled(bool);
 			}
-		
-	//	((ToggleButton)findViewById(R.id.x)).setEnabled(bool);
-	//	((ToggleButton)findViewById(R.id.o)).setEnabled(bool);
+
+		//	((ToggleButton)findViewById(R.id.x)).setEnabled(bool);
+		//	((ToggleButton)findViewById(R.id.o)).setEnabled(bool);
 	}
-	
-	
+
+
 	public void tgl(View v)
 	{
 
@@ -488,7 +487,7 @@ public class SetBoard extends Activity {
 			((ToggleButton) findViewById(R.id.x)).setChecked(false);
 			textToast("Not Your Turn!",Toast.LENGTH_SHORT);
 		}
-    	
+
 		if(v.getId()==R.id.x)
 		{
 			xo = xORo.X;
@@ -507,58 +506,62 @@ public class SetBoard extends Activity {
 		}
 
 	}
-	
+
 
 	public void play(View v)
 	{
-	
+
 		ToggleButton tb1 =  (ToggleButton) findViewById(R.id.x);
 		ToggleButton tb2 =  (ToggleButton) findViewById(R.id.o);
 		if(tb1.isChecked() || tb2.isChecked())
 		{
-			
-			position(v.getId());;
+
+			position(v.getId());
 			((Button) findViewById(v.getId())).setText(letter);
 			((Button) findViewById(v.getId())).setEnabled(false);
-			
+
 			if((ret_val=game.setValue(xo.getValue(),i,j))==1)
 			{
-				textToast("Order Wins!",Toast.LENGTH_LONG);
 				if(BT==1)BT=2; if(AI==1) AI=2;
 				int orderwins = getSharedPreferences("order",0).getInt("orderwins",0);
-	        	editor = getSharedPreferences("order",0).edit();
-	        	editor.putInt("orderwins", orderwins+1);
-	        	editor.commit();
-				((ImageButton) findViewById(R.id.refresh)).performClick();
+				editor = getSharedPreferences("order",0).edit();
+				editor.putInt("orderwins", orderwins+1);
+				editor.commit();
+				Intent i = new Intent(this, ResultActivity.class);
+				i.putExtra("order", 1);
+				i.putExtra("winner", 1);
+				startActivityForResult(i,1);
 			}
 			else if(ret_val==2)
 			{
-				textToast("Chaos Wins!",Toast.LENGTH_LONG);
 				if(BT==1)BT=2; if(AI==1) AI=2;
-		        int chaoswins = getSharedPreferences("chaos",0).getInt("chaoswins",0);
-	        	editor = getSharedPreferences("chaos",0).edit();
-	        	editor.putInt("chaoswins", chaoswins+1);
-	        	editor.commit();		        
-				((ImageButton) findViewById(R.id.refresh)).performClick();
+				int chaoswins = getSharedPreferences("chaos",0).getInt("chaoswins",0);
+				editor = getSharedPreferences("chaos",0).edit();
+				editor.putInt("chaoswins", chaoswins+1);
+				editor.commit();		        
+				Intent i = new Intent(this, ResultActivity.class);
+				i.putExtra("order", 0);
+				i.putExtra("winner", 0);
+				startActivityForResult(i,1);
 			}
 			tb1.setChecked(false);
 			tb2.setChecked(false);
-			
+
 			if(BT==1)
 			{
 				if(BTTurn==1)
 				{	
 					byte[] bytes = {(byte) xo.getValue(),(byte) i,(byte) j};
-				
+
 					cs.write(bytes);
 					BTTurn = 0;
-	        		tglLock=1;
+					tglLock=1;
 					enableBoard(false);
 				}
 				else
 				{
 					BTTurn = 1;
-	        		tglLock=0;
+					tglLock=0;
 					enableBoard(true);
 				}
 				//
@@ -567,42 +570,42 @@ public class SetBoard extends Activity {
 			if(AI==1 && ((botTurn)%2==1))
 				botMove(level_number);
 		}
-		
+
 		if(BT==2)BT=1; if(AI==2) AI=1;
 	}
-	
+
 	void botMove(int level_number)
 	{
-//		System.out.println("Level number in SetBoard "+level_number);
+		//		System.out.println("Level number in SetBoard "+level_number);
 		int[] move = bot.Board(game.arr);
-		
+
 		int id = id(move[1],move[2]);
 		if(move[3]==1)
 			((ToggleButton) findViewById(R.id.o)).performClick();
 		else
 			((ToggleButton) findViewById(R.id.x)).performClick();
-		
+
 		((Button) findViewById(id)).performClick();
 	}
-	
+
 	public void textToast(String textToDisplay,int duration) {
 		Context context = getApplicationContext();
 		CharSequence text = textToDisplay;
-	//	int duration = Toast.LENGTH_LONG;
+		//	int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.setGravity(Gravity.TOP|Gravity.LEFT, 50, 50);
 		toast.show();
-		}
+	}
 
 	public void undo(View v)
 	{
 		Context context = getApplicationContext();
 		int ai = AI;
-        int[] undo_position = game.undo_move(context);
-        if(undo_position[0]==-1 && undo_position[1]==-1)
-        	return;
-        int id = id(undo_position[0],undo_position[1]);
+		int[] undo_position = game.undo_move(context);
+		if(undo_position[0]==-1 && undo_position[1]==-1)
+			return;
+		int id = id(undo_position[0],undo_position[1]);
 		((Button) findViewById(id)).setText(" ");
 		((Button) findViewById(id)).setEnabled(true);
 		if(ai==1)
@@ -610,54 +613,85 @@ public class SetBoard extends Activity {
 			ai=0;
 			bot.move_number--;
 			undo_position = 	game.undo_move(context);
-			 id = id(undo_position[0],undo_position[1]);
+			id = id(undo_position[0],undo_position[1]);
 			((Button) findViewById(id)).setText(" ");
 			((Button) findViewById(id)).setEnabled(true);
 		}
 	}
-	
+
 	public void reset(View v)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Do you want to reset the Board?").setPositiveButton("Yes", dialogClickListener)
-		    .setNegativeButton("No", dialogClickListener).show();
+		.setNegativeButton("No", dialogClickListener).show();
 	}
-	
+
 	DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-	    @Override
-	    public void onClick(DialogInterface dialog, int which) {
-	    	Button b;
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			Button b;
 			int id;
-	        switch (which){
-	        case DialogInterface.BUTTON_POSITIVE:
-	            //Yes button clicked
-	        {
-	    		for(int i=0;i<6;i++)
-	    			for(int j=0;j<6;j++)
-	    			{
-//	    				id = (6-j) + 6*i + cons;
-	    				id = id(i,j);
-	    				b = ((Button)findViewById(id));
-	    				b.setText(" ");
-	    				b.setEnabled(true);
-	    			}
-	    		game.cleanArray();
-	    		break;
-	        }
-	        case DialogInterface.BUTTON_NEGATIVE:
-	            //No button clicked
-	            break;
-	        }
-	    }
+			switch (which){
+			case DialogInterface.BUTTON_POSITIVE:
+				//Yes button clicked
+			{
+				for(int i=0;i<6;i++)
+					for(int j=0;j<6;j++)
+					{
+						//	    				id = (6-j) + 6*i + cons;
+						id = id(i,j);
+						b = ((Button)findViewById(id));
+						b.setText(" ");
+						b.setEnabled(true);
+					}
+				game.cleanArray();
+				break;
+			}
+			case DialogInterface.BUTTON_NEGATIVE:
+				//No button clicked
+				break;
+			}
+		}
 	};
-	
+
 	protected void onDestroy()
 	{
 		if(BT==1)
 			cs.cancel();
 		super.onDestroy();
 	}
-	
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+
+		super.onActivityResult(requestCode, resultCode, data);
+		Log.i("result",String.valueOf(resultCode));
+
+		if(requestCode==1)
+		{
+			if(resultCode==1){
+				for(int i=0;i<6;i++)
+					for(int j=0;j<6;j++)
+					{
+						//    				id = (6-j) + 6*i + cons;
+						int id = id(i,j);
+						Button b = ((Button)findViewById(id));
+						b.setText(" ");
+						b.setEnabled(true);
+					}
+				game.cleanArray();
+
+			}
+
+			else if(resultCode==0)
+			{
+				finish();
+			}
+		}
+
+	}
+
 }
 
 
